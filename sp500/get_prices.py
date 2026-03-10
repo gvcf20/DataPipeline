@@ -1,28 +1,23 @@
+from __future__ import annotations
+
 import pandas as pd
-import yfinance as yf
 
-def download_data():
+try:
+    from .pipeline import DEFAULT_PRICES_PATH, update_sp500_dataset
+except ImportError:
+    from pipeline import DEFAULT_PRICES_PATH, update_sp500_dataset
 
-    csv_path = "../tickers/sp500/sp_500_historical_components.csv"
 
-    df = pd.read_csv(csv_path, parse_dates=['date'])
-    print(f"Componentes do S&P 500 carregados de '{csv_path}'")
-    df['tickers'] = df['tickers'].apply(lambda x: x.strip("[]").replace("'", "").split(','))
+def download_prices(start_date: str | None = None) -> pd.DataFrame:
+    parsed_start_date = pd.Timestamp(start_date).date() if start_date else None
+    update_sp500_dataset(start_date=parsed_start_date)
+    return pd.read_csv(DEFAULT_PRICES_PATH)
 
-    df_expl = df.explode('tickers')
 
-    df_expl['tickers'] = df_expl['tickers'].str.strip()
-
-    all_tickers = df_expl['tickers'].unique().tolist()
-
-    start_date = df['date'].iloc[0]
-    end_date = df['date'].iloc[-1]
-
-    all_prices = pd.DataFrame(yf.download(all_tickers, start=start_date, end=end_date))
-
-    print(all_prices)
-    return all_prices
+def download_data(start_date: str | None = None) -> pd.DataFrame:
+    return download_prices(start_date=start_date)
 
 
 if __name__ == "__main__":
-    download_data()
+    prices = download_prices()
+    print(prices.tail())
