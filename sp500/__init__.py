@@ -1,7 +1,9 @@
 from .pipeline import (
     DEFAULT_PRICES_PATH,
-    download_prices_for_required_pairs,
+    build_prices_dataset,
     fetch_sp500_constituents,
+    fill_component_history_gaps,
+    get_missing_pairs,
     load_required_price_pairs,
     normalize_symbol_for_yahoo,
     reshape_yfinance_prices,
@@ -10,8 +12,10 @@ from .pipeline import (
 
 __all__ = [
     "DEFAULT_PRICES_PATH",
-    "download_prices_for_required_pairs",
+    "build_prices_dataset",
     "fetch_sp500_constituents",
+    "fill_component_history_gaps",
+    "get_missing_pairs",
     "load_required_price_pairs",
     "normalize_symbol_for_yahoo",
     "reshape_yfinance_prices",
